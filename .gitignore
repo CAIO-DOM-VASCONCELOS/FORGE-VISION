@@ -1,0 +1,4 @@
+.tmp-inline-script.js
+*.log
+.DS_Store
+Thumbs.db
