@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate static application structure and secret hygiene
+        run: python scripts/validate_static.py
+      - name: Check inline JavaScript syntax
+        run: node --check .tmp-inline-script.js
+      - name: Run inventory math specification tests
+        run: node --test tests/inventory_math.test.mjs
+      - name: Cleanup generated validation file
+        if: always()
+        run: rm -f .tmp-inline-script.js
